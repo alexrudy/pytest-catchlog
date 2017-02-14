@@ -262,3 +262,11 @@ class LogCaptureHandler(logging.StreamHandler):
 
         self.records.append(record)
         logging.StreamHandler.emit(self, record)
+        
+    def handleError(self, record):
+        """Handle error"""
+        ei = sys.exc_info()
+        if ei[0] == ValueError and self.stream.closed:
+            # Swallow errors when the stream is closed.
+            return
+        return logging.StreamHandler.handleError(self, record)
